@@ -1,0 +1,27 @@
+[project]
+name = "metagameplay"
+version = "1.0.0"
+description = ""
+authors = [
+    {name = "Azamat Kuchkarov",email = "mrst0rm@bk.ru"}
+]
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [
+    "fastapi (>=0.115.7,<0.116.0)",
+    "sqlalchemy (>=2.0.37,<3.0.0)",
+    "uvicorn (>=0.34.0,<0.35.0)",
+    "ruff (>=0.9.3,<0.10.0)",
+    "pre-commit (>=4.1.0,<5.0.0)",
+    "alembic (>=1.14.1,<2.0.0)",
+    "asyncpg (>=0.30.0,<0.31.0)",
+    "psycopg2 (>=2.9.10,<3.0.0)",
+]
+
+
+[build-system]
+requires = ["poetry-core>=2.0.0,<3.0.0"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.poetry]
+package-mode = false
