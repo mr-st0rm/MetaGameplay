@@ -4,7 +4,7 @@ from sqlalchemy import select, update
 from sqlalchemy.orm import joinedload
 
 from server.repositories import BaseSQLAlchemyRepo
-from server.models import User, UserFinance
+from server.models import User, UserFinance, UserItem
 
 
 class UserRepo(BaseSQLAlchemyRepo):
@@ -42,6 +42,18 @@ class UserRepo(BaseSQLAlchemyRepo):
             update(UserFinance)
             .where(UserFinance.user_id == user_id)
             .values({UserFinance.balance: UserFinance.balance + Decimal(amount)})
+        )
+        await self.session.execute(statement)
+        await self.commit()
+
+    async def buy_item(self, user_id: int, item_id: int, item_price: Decimal) -> None:
+        user_item = UserItem(user_id=user_id, item_id=item_id)
+        self.session.add(user_item)
+
+        statement = (
+            update(UserFinance)
+            .where(UserFinance.user_id == user_id)
+            .values({UserFinance.balance: UserFinance.balance - Decimal(item_price)})
         )
         await self.session.execute(statement)
         await self.commit()

@@ -1,8 +1,14 @@
 from enum import StrEnum
 
-from pydantic import BaseModel
+from pydantic import BaseModel, field_validator
 
 from server.api.schemas import BaseOrmModel
+
+
+class DecimalRoundValidator:
+    @field_validator("price", "balance", mode="before", check_fields=False)
+    def validate_decimal(cls, value) -> float:
+        return round(float(value), 2)
 
 
 class UserStatesEnum(StrEnum):
@@ -10,13 +16,13 @@ class UserStatesEnum(StrEnum):
     GAME_SESSION = "game_session"
 
 
-class UserItemOutSchema(BaseOrmModel):
+class UserItemOutSchema(BaseOrmModel, DecimalRoundValidator):
     id: int
     name: str
     price: float
 
 
-class UserFinance(BaseOrmModel):
+class UserFinance(BaseOrmModel, DecimalRoundValidator):
     balance: float
 
 

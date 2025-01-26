@@ -13,8 +13,9 @@ def user_service_stub():
 
 def get_user_service(
     user_repo: Annotated[UserRepo, Depends(user_repo_stub)],
+    item_repo: Annotated[ItemRepo, Depends(item_repo_stub)],
 ) -> AsyncGenerator:
-    service = UserService(user_repo)
+    service = UserService(user_repo, item_repo)
     yield service
 
 

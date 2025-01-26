@@ -6,6 +6,7 @@ from server.api.schemas.user import (
     UserLoginInSchema,
     UserLoginOutSchema,
     UserItemOutSchema,
+    UserOutSchema,
 )
 from server.services.base import user_service_stub
 from server.services.user import UserService
@@ -43,3 +44,14 @@ async def get_user_balance(
     service: user_service_dependency,
 ) -> float:
     return await service.get_user_balance(user_id)
+
+
+@router.post(
+    "/{user_id}/buy_item/{item_id}/", description="Покупка пользователем предмета"
+)
+async def user_buy_item(
+    user_id: int,
+    item_id: int,
+    service: user_service_dependency,
+) -> UserOutSchema:
+    return await service.user_buy_item(user_id, item_id)

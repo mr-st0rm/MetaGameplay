@@ -1,0 +1,8 @@
+from enum import StrEnum
+
+
+class ValidationExceptionCode(StrEnum):
+    USER_NOT_FOUND = "USER_NOT_FOUND"
+    ITEM_NOT_FOUND = "ITEM_NOT_FOUND"
+    NOT_ENOUGH_BALANCE = "NOT_ENOUGH_BALANCE"
+    ALREADY_HAVE_ITEM = "ALREADY_HAVE_ITEM"
