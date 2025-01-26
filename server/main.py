@@ -43,7 +43,7 @@ def main(cfg: ServerConfig, application: FastAPI) -> None:
     application.dependency_overrides[user_repo_stub] = repo_provider.get_user_repo
     application.dependency_overrides[user_service_stub] = get_user_service
 
-    application.dependency_overrides[item_repo_stub] = repo_provider.get_user_repo
+    application.dependency_overrides[item_repo_stub] = repo_provider.get_item_repo
     application.dependency_overrides[item_service_stub] = get_item_service
 
     application.include_router(api_v1_router, prefix="/api/v1")
