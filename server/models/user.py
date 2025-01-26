@@ -10,8 +10,8 @@ class User(BaseModel):
     id: Mapped[int] = mapped_column(primary_key=True)
     username: Mapped[str] = mapped_column(unique=True)
 
-    finances: Mapped["UserFinance"] = relationship()
-    items: Mapped["UserItem"] = relationship()
+    finance = relationship("UserFinance", uselist=False, back_populates="user")
+    items = relationship("Item", secondary="user_items", back_populates="users")
 
     def __str__(self) -> str:
         return f"User {self.username}"
@@ -24,7 +24,7 @@ class UserFinance(BaseModel):
     user_id: Mapped[int] = mapped_column(ForeignKey(User.id))
     balance: Mapped[float] = mapped_column(Numeric)
 
-    user: Mapped[User] = relationship()
+    user = relationship("User", back_populates="finance")
 
     def __str__(self) -> str:
         return f"User {self.user_id} has {self.balance}"
