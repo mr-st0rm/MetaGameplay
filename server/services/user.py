@@ -82,12 +82,18 @@ class UserService(BaseService):
 
         return UserOutSchema.model_validate(await self.repository.get_by_id(user_id))
 
-    def _validate_user_buy_item(self, user: User, item: Item) -> None:
-        if not item:
-            raise HTTPException(
-                status_code=status.HTTP_404_NOT_FOUND,
-                detail=ValidationExceptionCode.ITEM_NOT_FOUND.value,
-            )
+    async def user_sell_item(self, user_id: int, item_id: int) -> UserOutSchema:
+        user = await self.repository.get_by_id(user_id)
+        item = await self.item_repository.get_by_id(item_id)
+
+        self._validate_user_sell_item(user, item)
+
+        await self.repository.user_sell_item(user_id, item.id, item.price)
+
+        return UserOutSchema.model_validate(await self.repository.get_by_id(user_id))
+
+    def _validate_user_buy_item(self, user: User, item: Item | None) -> None:
+        self._validate_item_exists(item)
 
         if user.finance.balance < item.price:
             raise HTTPException(
@@ -95,8 +101,25 @@ class UserService(BaseService):
                 detail=ValidationExceptionCode.NOT_ENOUGH_BALANCE.value,
             )
 
-        if item.id in [user_item.id for user_item in user.items]:
+        if item.id in {user_item.id for user_item in user.items}:
             raise HTTPException(
                 status_code=status.HTTP_400_BAD_REQUEST,
                 detail=ValidationExceptionCode.ALREADY_HAVE_ITEM.value,
+            )
+
+    def _validate_item_exists(self, item: Item | None) -> None:
+        if not item:
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail=ValidationExceptionCode.ITEM_NOT_FOUND.value,
+            )
+
+    def _validate_user_sell_item(self, user: User, item: Item | None) -> None:
+        self._validate_user(user)
+        self._validate_item_exists(item)
+
+        if item.id not in {item.id for item in user.items}:
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail=ValidationExceptionCode.USER_ITEM_NOT_FOUND.value,
             )

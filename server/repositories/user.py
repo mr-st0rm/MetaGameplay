@@ -1,6 +1,6 @@
 from decimal import Decimal
 
-from sqlalchemy import select, update
+from sqlalchemy import select, update, delete
 from sqlalchemy.orm import joinedload
 
 from server.repositories import BaseSQLAlchemyRepo
@@ -46,7 +46,7 @@ class UserRepo(BaseSQLAlchemyRepo):
         await self.session.execute(statement)
         await self.commit()
 
-    async def buy_item(self, user_id: int, item_id: int, item_price: Decimal) -> None:
+    async def buy_item(self, user_id: int, item_id: int, item_price: float) -> None:
         user_item = UserItem(user_id=user_id, item_id=item_id)
         self.session.add(user_item)
 
@@ -54,6 +54,22 @@ class UserRepo(BaseSQLAlchemyRepo):
             update(UserFinance)
             .where(UserFinance.user_id == user_id)
             .values({UserFinance.balance: UserFinance.balance - Decimal(item_price)})
+        )
+        await self.session.execute(statement)
+        await self.commit()
+
+    async def user_sell_item(
+        self, user_id: int, item_id: int, item_price: float
+    ) -> None:
+        statement = delete(UserItem).where(
+            UserItem.user_id == user_id, UserItem.item_id == item_id
+        )
+        await self.session.execute(statement)
+
+        statement = (
+            update(UserFinance)
+            .where(UserFinance.user_id == user_id)
+            .values({UserFinance.balance: UserFinance.balance + Decimal(item_price)})
         )
         await self.session.execute(statement)
         await self.commit()

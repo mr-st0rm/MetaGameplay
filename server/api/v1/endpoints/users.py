@@ -55,3 +55,15 @@ async def user_buy_item(
     service: user_service_dependency,
 ) -> UserOutSchema:
     return await service.user_buy_item(user_id, item_id)
+
+
+@router.post(
+    "/{user_id}/sell_item/{item_id}/",
+    description="Продажа пользователем предмета из инвентаря",
+)
+async def user_sell_item(
+    user_id: int,
+    item_id: int,
+    service: user_service_dependency,
+) -> UserOutSchema:
+    return await service.user_sell_item(user_id, item_id)
