@@ -10,6 +10,7 @@ from server.api.schemas.user import (
     UserStatesEnum,
     UserOutSchema,
     UserItemOutSchema,
+    UserFinanceOutSchema,
 )
 from server.config.cfg import get_config
 from server.models import User, Item
@@ -43,12 +44,12 @@ class UserService(BaseService):
 
         return [UserItemOutSchema.model_validate(user_item) for user_item in user.items]
 
-    async def get_user_balance(self, user_id: int) -> float:
+    async def get_user_balance(self, user_id: int) -> UserFinanceOutSchema:
         # todo: cache
         user = await self.repository.get_by_id(user_id)
         self._validate_user(user)
 
-        return user.finance.balance
+        return UserFinanceOutSchema(balance=user.finance.balance)
 
     def _validate_user(self, user: User) -> None:
         if not user:
@@ -71,7 +72,7 @@ class UserService(BaseService):
             )
             await self.repository.add_balance(user_id, amount)
 
-    async def user_buy_item(self, user_id: int, item_id: int) -> UserOutSchema:
+    async def user_buy_item(self, user_id: int, item_id: int) -> None:
         user = await self.repository.get_by_id(user_id)
         self._validate_user(user)
 
@@ -80,17 +81,13 @@ class UserService(BaseService):
 
         await self.repository.buy_item(user.id, item.id, item.price)
 
-        return UserOutSchema.model_validate(await self.repository.get_by_id(user_id))
-
-    async def user_sell_item(self, user_id: int, item_id: int) -> UserOutSchema:
+    async def user_sell_item(self, user_id: int, item_id: int) -> None:
         user = await self.repository.get_by_id(user_id)
         item = await self.item_repository.get_by_id(item_id)
 
         self._validate_user_sell_item(user, item)
 
         await self.repository.user_sell_item(user_id, item.id, item.price)
-
-        return UserOutSchema.model_validate(await self.repository.get_by_id(user_id))
 
     def _validate_user_buy_item(self, user: User, item: Item | None) -> None:
         self._validate_item_exists(item)

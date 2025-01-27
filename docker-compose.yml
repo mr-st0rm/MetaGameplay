@@ -5,7 +5,7 @@ services:
     command: bash -c "alembic upgrade head && python ./server/main.py"
     restart: always
     env_file:
-      - .env
+      - server/.env
     ports:
       - "${SERVICE_PORT}:${SERVICE_PORT}"
     networks:

@@ -22,7 +22,7 @@ class UserItemOutSchema(BaseOrmModel, DecimalRoundValidator):
     price: float
 
 
-class UserFinance(BaseOrmModel, DecimalRoundValidator):
+class UserFinanceOutSchema(BaseOrmModel, DecimalRoundValidator):
     balance: float
 
 
@@ -30,7 +30,7 @@ class UserOutSchema(BaseOrmModel):
     id: int
     username: str
     items: list[UserItemOutSchema]
-    finance: UserFinance
+    finance: UserFinanceOutSchema
 
 
 class UserLoginInSchema(BaseModel):

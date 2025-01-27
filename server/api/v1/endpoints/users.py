@@ -6,7 +6,7 @@ from server.api.schemas.user import (
     UserLoginInSchema,
     UserLoginOutSchema,
     UserItemOutSchema,
-    UserOutSchema,
+    UserFinanceOutSchema,
 )
 from server.services.base import user_service_stub
 from server.services.user import UserService
@@ -42,7 +42,7 @@ async def get_user_items(
 async def get_user_balance(
     user_id: int,
     service: user_service_dependency,
-) -> float:
+) -> UserFinanceOutSchema:
     return await service.get_user_balance(user_id)
 
 
@@ -53,7 +53,7 @@ async def user_buy_item(
     user_id: int,
     item_id: int,
     service: user_service_dependency,
-) -> UserOutSchema:
+) -> None:
     return await service.user_buy_item(user_id, item_id)
 
 
@@ -65,5 +65,5 @@ async def user_sell_item(
     user_id: int,
     item_id: int,
     service: user_service_dependency,
-) -> UserOutSchema:
+) -> None:
     return await service.user_sell_item(user_id, item_id)
