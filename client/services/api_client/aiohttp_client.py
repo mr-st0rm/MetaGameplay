@@ -3,7 +3,7 @@ from typing import Any, Literal
 
 from aiohttp import ClientSession, ClientResponse
 
-from client.services.base_api_client import AbstractHttpClient
+from client.services.api_client.base_api_client import AbstractHttpClient
 
 
 api_logger = logging.getLogger(__name__)
@@ -13,16 +13,19 @@ class AioHttpClient(AbstractHttpClient):
     client: ClientSession
 
     def __init__(self, base_url: str) -> None:
-        super().__init__(ClientSession(base_url.rstrip("/")))
+        super().__init__(ClientSession(base_url))
 
     async def get(
-        self, path: str, params: dict[str, Any] | None
+        self, path: str, params: dict[str, Any] | None = None
     ) -> dict[str, Any] | None:
         async with self.client.get(path, params=params) as response:
             return await self._handle_response("GET", response)
 
     async def post(
-        self, path: str, payload: dict[str, Any] | None, params: dict[str, Any] | None
+        self,
+        path: str,
+        payload: dict[str, Any] | None = None,
+        params: dict[str, Any] | None = None,
     ) -> dict[str, Any] | None:
         async with self.client.post(path, json=payload, params=params) as response:
             return await self._handle_response("POST", response)

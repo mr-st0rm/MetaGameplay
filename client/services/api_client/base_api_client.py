@@ -7,9 +7,14 @@ class AbstractHttpClient(abc.ABC):
         self.client = client
 
     @abc.abstractmethod
-    async def get(self, path: str, params: dict[str, Any] | None) -> dict[str, Any]: ...
+    async def get(
+        self, path: str, params: dict[str, Any] | None = None
+    ) -> dict[str, Any]: ...
 
     @abc.abstractmethod
     async def post(
-        self, path: str, payload: dict[str, Any] | None, params: dict[str, Any] | None
+        self,
+        path: str,
+        payload: dict[str, Any] | None = None,
+        params: dict[str, Any] | None = None,
     ) -> dict[str, Any]: ...
