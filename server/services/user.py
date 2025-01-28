@@ -120,3 +120,9 @@ class UserService(BaseService):
                 status_code=status.HTTP_400_BAD_REQUEST,
                 detail=ValidationExceptionCode.USER_ITEM_NOT_FOUND.value,
             )
+
+    async def get_user_by_id(self, user_id: int) -> UserOutSchema:
+        user = await self.repository.get_by_id(user_id)
+        self._validate_user(user)
+
+        return UserOutSchema.model_validate(user)

@@ -7,6 +7,7 @@ from server.api.schemas.user import (
     UserLoginOutSchema,
     UserItemOutSchema,
     UserFinanceOutSchema,
+    UserOutSchema,
 )
 from server.services.base import user_service_stub
 from server.services.user import UserService
@@ -25,6 +26,14 @@ async def login(
     service: user_service_dependency,
 ) -> UserLoginOutSchema:
     return await service.login(payload)
+
+
+@router.get("/{user_id}/", description="Получение пользователя по ID")
+async def get_user_by_id(
+    user_id: int,
+    service: user_service_dependency,
+) -> UserOutSchema:
+    return await service.get_user_by_id(user_id)
 
 
 @router.get(

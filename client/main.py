@@ -15,10 +15,14 @@ async def main():
     )
     config = get_config()
 
-    game_service = GameProcessService(AioHttpClient(config.api.BASE_URL))
+    aiohttp_client = AioHttpClient(config.api.BASE_URL)
+    game_service = GameProcessService(aiohttp_client)
 
-    while game_service.IN_GAME:
-        await game_service.start_game()
+    try:
+        while game_service.IN_GAME:
+            await game_service.start_game()
+    finally:
+        await aiohttp_client.client.close()
 
 
 if __name__ == "__main__":

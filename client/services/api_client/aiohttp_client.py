@@ -10,6 +10,7 @@ api_logger = logging.getLogger(__name__)
 
 
 class AioHttpClient(AbstractHttpClient):
+    HTTP_400_BAD_REQUEST: int = 400
     client: ClientSession
 
     def __init__(self, base_url: str) -> None:
@@ -35,9 +36,11 @@ class AioHttpClient(AbstractHttpClient):
     ) -> dict[str, Any] | None:
         if response.ok:
             try:
-                return await response.json()
+                return await response.json() or {}
             except Exception as exc:
                 await self._log_response_error(request_type, response, error=exc)
+        elif response.status == self.HTTP_400_BAD_REQUEST:
+            return await response.json() | {"status": response.status}
         else:
             await self._log_response_error(request_type, response)
 
