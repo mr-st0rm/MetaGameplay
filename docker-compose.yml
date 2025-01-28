@@ -2,10 +2,9 @@ services:
   server:
     build:
       context: .
-    command: bash -c "alembic upgrade head && python ./server/main.py"
+    command: bash -c "alembic upgrade head && python server/main.py"
     restart: always
-    env_file:
-      - server/.env
+    env_file: ./server/.env
     ports:
       - "${SERVICE_PORT}:${SERVICE_PORT}"
     networks:
@@ -18,8 +17,7 @@ services:
   database:
     container_name: database
     image: postgres:16-alpine
-    env_file:
-      - .env
+    env_file: ./server/.env
     volumes:
       - db-data:/var/data/volumes/db
     ports:

@@ -1,9 +1,9 @@
 import asyncio
 import logging
 
-from client.config.cfg import get_config
-from client.services.api_client.aiohttp_client import AioHttpClient
-from client.game import GameProcessService
+from config.cfg import get_config
+from services.api_client.aiohttp_client import AioHttpClient
+from game import GameProcessService
 
 
 async def main():

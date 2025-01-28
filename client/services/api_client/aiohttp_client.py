@@ -3,7 +3,7 @@ from typing import Any, Literal
 
 from aiohttp import ClientSession, ClientResponse
 
-from client.services.api_client.base_api_client import AbstractHttpClient
+from services.api_client.base_api_client import AbstractHttpClient
 
 
 api_logger = logging.getLogger(__name__)

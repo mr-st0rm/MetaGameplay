@@ -1,7 +1,7 @@
 import logging
 
-from client.services.api_client.base_api_client import AbstractHttpClient
-from client.services.server.schemas import (
+from services.api_client.base_api_client import AbstractHttpClient
+from services.server.schemas import (
     UserLoginInSchema,
     UserFinanceInSchema,
     UserItemInSchema,

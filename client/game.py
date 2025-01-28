@@ -1,8 +1,8 @@
 from typing import Literal, Any
 
-from client.messages import GameMessage
-from client.services.server.client import ServerService
-from client.services.server.schemas import UserItemInSchema
+from messages import GameMessage
+from services.server.client import ServerService
+from services.server.schemas import UserItemInSchema
 
 
 class GameProcessService:
