@@ -1,9 +1,9 @@
-from enum import StrEnum
+from enum import Enum
 
 from pydantic import BaseModel
 
 
-class UserStatesEnum(StrEnum):
+class UserStatesEnum(str, Enum):
     LOGIN = "login"
     GAME_SESSION = "game_session"
 

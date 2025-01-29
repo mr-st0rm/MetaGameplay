@@ -1,7 +1,7 @@
-from enum import StrEnum
+from enum import Enum
 
 
-class ValidationExceptionCode(StrEnum):
+class ValidationExceptionCode(str, Enum):
     USER_NOT_FOUND = "USER_NOT_FOUND"
     USER_ITEM_NOT_FOUND = "USER_ITEM_NOT_FOUND"
     ITEM_NOT_FOUND = "ITEM_NOT_FOUND"

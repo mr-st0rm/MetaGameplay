@@ -25,9 +25,14 @@ class GameConfig(BaseModel):
     RANDOM_CREDITS_TO_RANGE: float | int
 
 
+class CacheConfig(BaseModel):
+    URL: str
+
+
 class ServerConfig(BaseModel):
     api: APIConfig
     database: DataBaseConfig
+    cache: CacheConfig
     game: GameConfig
 
 
@@ -45,6 +50,9 @@ def get_config() -> ServerConfig:
             DATABASE=os.environ.get("POSTGRES_DB"),
             PORT=int(os.environ.get("POSTGRES_PORT")),
             URL=os.environ.get("DATABASE_URL"),
+        ),
+        cache=CacheConfig(
+            URL=os.environ.get("CACHE_URL"),
         ),
         game=GameConfig(
             ALLOW_ADD_CREDITS=os.environ.get("ALLOW_ADD_CREDITS").lower() == "true",

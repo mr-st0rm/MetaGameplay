@@ -1,4 +1,4 @@
-from enum import StrEnum
+from enum import Enum
 
 from pydantic import BaseModel, field_validator
 
@@ -11,7 +11,7 @@ class DecimalRoundValidator:
         return round(float(value), 2)
 
 
-class UserStatesEnum(StrEnum):
+class UserStatesEnum(str, Enum):
     LOGIN = "login"
     GAME_SESSION = "game_session"
 

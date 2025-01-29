@@ -10,6 +10,7 @@ from server.api.schemas.user import (
     UserOutSchema,
 )
 from server.services.base import user_service_stub
+from server.services.cache.decorator import cache_response
 from server.services.user import UserService
 
 
@@ -29,6 +30,7 @@ async def login(
 
 
 @router.get("/{user_id}/", description="Получение пользователя по ID")
+@cache_response()
 async def get_user_by_id(
     user_id: int,
     service: user_service_dependency,
@@ -40,6 +42,7 @@ async def get_user_by_id(
     "/{user_id}/items/",
     description="Весь инвентарь пользователя",
 )
+@cache_response()
 async def get_user_items(
     user_id: int,
     service: user_service_dependency,
@@ -48,6 +51,7 @@ async def get_user_items(
 
 
 @router.get("/{user_id}/balance/", description="Баланс пользователя")
+@cache_response()
 async def get_user_balance(
     user_id: int,
     service: user_service_dependency,
@@ -63,7 +67,9 @@ async def user_buy_item(
     item_id: int,
     service: user_service_dependency,
 ) -> None:
-    return await service.user_buy_item(user_id, item_id)
+    buy_item_response = await service.user_buy_item(user_id, item_id)
+    await service.clear_user_cache(user_id)
+    return buy_item_response
 
 
 @router.post(
@@ -75,4 +81,6 @@ async def user_sell_item(
     item_id: int,
     service: user_service_dependency,
 ) -> None:
-    return await service.user_sell_item(user_id, item_id)
+    sell_item_response = await service.user_sell_item(user_id, item_id)
+    await service.clear_user_cache(user_id)
+    return sell_item_response

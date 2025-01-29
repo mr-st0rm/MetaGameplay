@@ -17,6 +17,7 @@ from server.models import User, Item
 from server.repositories.item import ItemRepo
 from server.repositories.user import UserRepo
 from server.services import BaseService
+from server.services.cache.redis_cache import redis_cache_service
 
 
 class UserService(BaseService):
@@ -38,14 +39,12 @@ class UserService(BaseService):
         )
 
     async def get_user_items(self, user_id: int) -> list[UserItemOutSchema]:
-        # todo: cache
         user = await self.repository.get_by_id(user_id)
         self._validate_user(user)
 
         return [UserItemOutSchema.model_validate(user_item) for user_item in user.items]
 
     async def get_user_balance(self, user_id: int) -> UserFinanceOutSchema:
-        # todo: cache
         user = await self.repository.get_by_id(user_id)
         self._validate_user(user)
 
@@ -126,3 +125,12 @@ class UserService(BaseService):
         self._validate_user(user)
 
         return UserOutSchema.model_validate(user)
+
+    async def clear_user_cache(self, user_id: int) -> None:
+        await redis_cache_service.delete(
+            [
+                redis_cache_service.generate_key("get_user_by_id", user_id=user_id),
+                redis_cache_service.generate_key("get_user_items", user_id=user_id),
+                redis_cache_service.generate_key("get_user_balance", user_id=user_id),
+            ]
+        )

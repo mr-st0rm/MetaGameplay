@@ -1,4 +1,4 @@
-FROM python:3.12
+FROM python:3.10
 
 ENV PYTHONDONTWRITEBYTECODE 1
 ENV PYTHONUNBUFFERED 1
@@ -16,6 +16,8 @@ RUN poetry config virtualenvs.create false
 RUN poetry config installer.max-workers 1
 
 RUN poetry install
+RUN pip install setuptools
+
 RUN mkdir "src"
 WORKDIR /src
 COPY . /src

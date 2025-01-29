@@ -4,7 +4,7 @@ services:
       context: .
     command: bash -c "alembic upgrade head && python server/main.py"
     restart: always
-    env_file: ./server/.env
+    env_file: ./server/.env.example
     ports:
       - "${SERVICE_PORT}:${SERVICE_PORT}"
     networks:
@@ -13,11 +13,26 @@ services:
       - .:/src
     depends_on:
       - database
+      - cache
+
+  cache:
+    container_name: cache
+    image: redis:7.4-alpine
+    command: redis-server --save 60 1 --loglevel warning --requirepass ${REDIS_PASSWORD}
+    env_file: ./server/.env.example
+    healthcheck:
+      test: [ "CMD", "redis-cli", "ping" ]
+    ports:
+      - "${REDIS_PORT}:${REDIS_PORT}"
+    networks:
+      server-network:
+    volumes:
+      - cache-data:/var/data/volumes/cache
 
   database:
     container_name: database
     image: postgres:16-alpine
-    env_file: ./server/.env
+    env_file: ./server/.env.example
     volumes:
       - db-data:/var/data/volumes/db
     ports:
@@ -32,3 +47,4 @@ networks:
 
 volumes:
   db-data:
+  cache-data:
